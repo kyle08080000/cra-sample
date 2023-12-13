@@ -64,7 +64,7 @@ export default function Products() {
   );
 }
 
-// 《代碼結構和功能》
+// 《代碼結構和功能》 
 // 這段代碼定義了兩個 React 組件：Product 和 Products。這些組件用於顯示產品列表，並允許用戶將選擇的產品添加到購物車。
 
 // Product 組件：負責渲染單個產品的資訊和交互界面。
