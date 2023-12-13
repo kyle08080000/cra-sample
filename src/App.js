@@ -26,7 +26,7 @@ function App() {
   return (
     <CartContext.Provider value={reducer}>
       <Navbar></Navbar>
-      <div className="container mt-4">
+      <div className="container mt-3 mb-5">
         <div className="row flex-md-row flex-column-reverse">
           <div className="col-md-7">
             <Products></Products>

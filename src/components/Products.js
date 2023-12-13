@@ -1,49 +1,68 @@
-import { useContext, useState } from "react";
+import { useContext, useState, } from "react";
 import productsData from "../assets/productsData";
 import { CartContext } from "../store";
+import QuantityModal from "./QuantityModal"; // 按下加入購物車彈出的模組
 
-function Product({ product, dispatch }) {
+
+function Product({ product, dispatch, cartQuantity, state }) {
   const [quantity, setQuantity] = useState(1);
-
-  const addToCart = () => {
-    dispatch({
-      type: 'ADD_TO_CART',
-      payload: {
-        ...product,
-        quantity: quantity
-      }
-    });
-    setQuantity(1); // 重置數量為 1
-  };
+  const [showModal, setShowModal] = useState(false);
   
+  const isOutOfStock = product.stock === 0;
+
+  const addToCart = (selectedQuantity) => {
+    // 如果商品不是０的話才執行。在加入購物車按鈕已有判斷，如果商品是０則禁用按鈕。
+    if (!isOutOfStock) {
+      dispatch({
+        type: 'ADD_TO_CART',
+        payload: {
+          ...product,
+          quantity: selectedQuantity // 使用從 Modal 傳過來的數量
+        }
+      });
+      setQuantity(1); // 重置數量為 1
+      setShowModal(false); // 關閉 Modal
+    } else {
+      alert('太多了')
+    }
+  }
+
   return (
     <div className="col">
       <div className="card">
         <img src={product.img} className="card-img-top" alt="..." />
         <div className="card-body">
-          <h6 className="card-title">
-            {product.title}
-            <span className="float-end">
-              NT ${product.price}
-            </span>
-          </h6>
-          <div className="row g-0">
-            <div className="col-8">
-              <button type="button" className="btn btn-outline-primary w-100 text-nowrap"
-                onClick={addToCart}>
-                加入購物車
+          <div className="row row-cols-1">
+            <div className="col">
+              <h6 className="card-title">
+                {product.title}
+              </h6>
+            </div>
+            <div className="col">
+              <span className="d-block mb-2">
+                  NT ${product.price}
+              </span>
+            </div>
+          </div>
+          <div className="row g-0 row-cols-1">
+            <div className="col">
+              <button // 在這裡如果商品是０則禁用按鈕
+                type="button"
+                className={`btn btn-outline-primary w-100 text-nowrap ${isOutOfStock ? 'disabled' : ''}`}
+                onClick={() => isOutOfStock ? null : setShowModal(true)}
+              >
+                {isOutOfStock ? '已售完' : '加入購物車'}
               </button>
             </div>
-            <div className="col-4">
-              <select 
-                className="form-select"
-                value={quantity}
-                onChange={(e) => setQuantity(parseInt(e.target.value))}
-              >
-                {[...Array(20)].map((_, index) => (
-                  <option value={index + 1} key={index}>{index + 1}</option>
-                ))}
-              </select>
+            <div className="col">
+              <QuantityModal 
+                product={product}
+                showModal={showModal} 
+                onClose={() => setShowModal(false)} 
+                onConfirm={(selectedQuantity) => addToCart(selectedQuantity)} // 將選擇的數量從 QuantityModal傳回來這裡
+                maxQuantity={product.stock} // 商品最大數量
+                cartQuantity={cartQuantity} // 購物車已有的數量
+              />
             </div>
           </div>
         </div>
@@ -58,7 +77,7 @@ export default function Products() {
   return (
     <div className="row row-cols-2 row-cols-md-3 g-3">
       {productsData.map((product) => (
-        <Product key={product.id} product={product} dispatch={dispatch} />
+        <Product key={product.id} product={product} dispatch={dispatch} state={state} />
       ))}
     </div>
   );

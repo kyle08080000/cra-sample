@@ -3,14 +3,14 @@ import { CartContext } from "../store"
 
 
 export default function Cart() {
-
   const [state, dispatch] = useContext(CartContext);
-
   return (
     <div className="bg-light p-3">
       <table className="table table-light align-middle">
         <tbody>
           {state.cartList.map((item) => {
+            const maxQuantity = item.stock; // 獲取當前項目的庫存量作為最大數量
+
             return (
               <tr key={item.id}>
                 <td>
@@ -48,13 +48,9 @@ export default function Cart() {
                       }
                     })
                   }}>
-                    {[...Array(20)].map((_, index) => { // 只接使用[...Array(20)]創建一個新的空陣列
-                      // 因為使用[...Array(20)]的方式，陣列裡面20個的值的會是空的，所以用_表示
-                      return (
-                        // 陣列索引值從０開始，而商品數量不能是０，所以要加１
-                        <option value={index+1} key={index}>{index + 1}</option>
-                      )
-                    })}
+                    {[...Array(maxQuantity)].map((_, index) => (
+                      <option value={index + 1} key={index}>{index + 1}</option>
+                    ))}
                   </select>
                 </td>
                 <td className="text-end">
@@ -76,3 +72,4 @@ export default function Cart() {
     </div>
   )
 }
+

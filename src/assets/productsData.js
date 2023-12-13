@@ -6,30 +6,35 @@ const productsData = [
     img: 'https://images.unsplash.com/photo-1494390248081-4e521a5940db?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1406&q=80',
     price: 120,
     title: '鮮果優格餐',
+    stock: 20, // 剩餘商品 0
   },
   {
     id: 'NFrU1lXCmNuKOm',
     img: 'https://images.unsplash.com/photo-1547592180-85f173990554?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
     price: 210,
     title: '全蔬食健康餐',
+    stock: 10,
   },
   {
     id: 'NFrTUDhZSh5BV',
     img: 'https://images.unsplash.com/photo-1448043552756-e747b7a2b2b8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1352&q=80',
     price: 369,
     title: '酒蒸蛤蠣',
+    stock: 10,
   },
   {
     id: 'NFrR9-OntFZXgb',
     img: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1557&q=80',
     price: 300,
     title: '綜合特調果汁',
+    stock: 10,
   },
   {
     id: 'NFCsIcKeaonlaV',
     img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1689&q=80',
     price: 999,
     title: '巧克力蛋糕',
+    stock: 10,
   },
   
    {
@@ -41,6 +46,7 @@ const productsData = [
     price: 85,
   
     title: '德式黑森林蛋糕',
+    stock: 10,
   
    },
   
@@ -53,6 +59,7 @@ const productsData = [
     price: 250,
   
     title: '千層奶油酥派',
+    stock: 10,
   
    },
   
@@ -65,6 +72,7 @@ const productsData = [
     price: 130,
   
     title: '香草榛果蛋糕',
+    stock: 10,
   
    },
   
@@ -77,6 +85,7 @@ const productsData = [
     price: 77,
   
     title: '巧克力杯子蛋糕',
+    stock: 10,
   
    },
   
@@ -89,6 +98,7 @@ const productsData = [
     price: 899,
   
     title: '串燒組合',
+    stock: 10,
   
    },
 ];
