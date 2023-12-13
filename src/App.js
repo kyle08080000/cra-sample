@@ -1,52 +1,45 @@
 // 最上面放 外部套件
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useReducer, useState } from "react";
+// import axios from "axios";
 
 // src 相關檔案
-import logo from './assets/logo.svg';
-import './assets/App.css';
-import Input from './components/Input';
-import './assets/all.scss';
+import './assets/scss/all.scss';
 
-// axios
+// components 元件（建議外部元件 寫在比 內部自定義 的前面一點的地方）
+// 外部元件
+import { CartContext, cartReducer, cartInit } from "./store"; // createContext在 store元件被建立！然後導入到這裡。
+// 內部自定義元件
+import Navbar from "./components/Navbar";
+import Products from "./components/Products";
+import Cart from "./components/Cart";
+
+// const starWarData = async () => {
+//   const result = await axios.get('https://jsonplaceholder.typicode.com/photos');
+//   console.log(result);
+// }
+// starWarData();
 
 function App() {
-  const [text, setText] = useState('');
-
-  const onChangHandler = (e) => {
-    setText(e.target.value);
-  }
-
-  useEffect(() => {
-    (async() => {
-      const path = process.env.REACT_APP_PATH;
-      const result = await axios.get(path);
-      console.log(result);
-    })();
-  }, []);
+  
+  const reducer = useReducer(cartReducer, cartInit);
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-        <Input id="sampleText" text="這是一個input" value={text} onChangHandler={onChangHandler} ></Input>
-        {text}
-        <button type="button" className="btn btn-primary">Primary</button>
-      </header>
-    </div>
+    <CartContext.Provider value={reducer}>
+      <Navbar></Navbar>
+      <div className="container mt-4">
+        <div className="row flex-md-row flex-column-reverse">
+          <div className="col-md-7">
+            <Products></Products>
+          </div>
+          <div className="col-md-5 mb-4">
+            <Cart></Cart>
+          </div>
+        </div>
+      </div>
+    </CartContext.Provider>
+
   );
 }
 
-export default App;
 
+export default App;
