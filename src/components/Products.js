@@ -15,7 +15,6 @@ function Product({ product, dispatch }) {
     });
     setQuantity(1); // 重置數量為 1
   };
-
   
   return (
     <div className="col">
