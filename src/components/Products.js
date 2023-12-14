@@ -3,29 +3,43 @@ import productsData from "../assets/productsData";
 import { CartContext } from "../store";
 import QuantityModal from "./QuantityModal"; // 按下加入購物車彈出的模組
 
-
 function Product({ product, dispatch, cartQuantity, state }) {
   const [quantity, setQuantity] = useState(1);
   const [showModal, setShowModal] = useState(false);
-  
+  // console.log(product);
   const isOutOfStock = product.stock === 0;
 
   const addToCart = (selectedQuantity) => {
-    // 如果商品不是０的話才執行。在加入購物車按鈕已有判斷，如果商品是０則禁用按鈕。
-    if (!isOutOfStock) {
-      dispatch({
-        type: 'ADD_TO_CART',
-        payload: {
-          ...product,
-          quantity: selectedQuantity // 使用從 Modal 傳過來的數量
-        }
-      });
-      setQuantity(1); // 重置數量為 1
-      setShowModal(false); // 關閉 Modal
-    } else {
-      alert('太多了')
+    // 尋找購物車中當前商品的條目
+    const existingCartItem = state.cartList.find(item => item.id === product.id);
+    /*  (何要使用find？)useContext 是 React 的一个 Hook，它允许你跨组件层级直接访问 context。
+    当你通过 useContext(CartContext) 获取到的 state 对象时，这个对象代表的是 CartContext 提供的当前上下文的值。
+    在代码里，state.cartList 是购物车的数组。每一项商品对象在购物车数组中都应该有自己的 quantity 属性。所以，你不能直接使用 state.cartList.quantity，因为 cartList 是一个数组，不是单个商品对象。你需要遍历这个数组，找到特定商品，然后访问这个商品的 quantity 属性。 */
+  
+    // 如果商品已在購物車中，獲取它的數量，否則設為0
+    const currentCartQuantity = existingCartItem ? existingCartItem.quantity : 0;
+  
+    // 計算包括新選擇的數量後的總數量
+    const totalQuantity = currentCartQuantity + selectedQuantity;
+  
+    // 檢查總數量是否超過了庫存
+    if (totalQuantity > product.stock) {
+      alert('無法再加入購物車，已超過商品庫存！');
+      return; // 退出函數，不執行添加到購物車的操作
     }
-  }
+  
+    // 如果沒有超過庫存，執行添加到購物車的操作
+    dispatch({
+      type: 'ADD_TO_CART',
+      payload: {
+        ...product,
+        quantity: selectedQuantity // 使用從 Modal 傳過來的數量
+      }
+    });
+    setQuantity(1); // 重置數量為 1
+    setShowModal(false); // 關閉 Modal
+  };
+  
 
   return (
     <div className="col">
@@ -46,7 +60,7 @@ function Product({ product, dispatch, cartQuantity, state }) {
           </div>
           <div className="row g-0 row-cols-1">
             <div className="col">
-              <button // 在這裡如果商品是０則禁用按鈕
+              <button // 如果商品是0則禁用按鈕
                 type="button"
                 className={`btn btn-outline-primary w-100 text-nowrap ${isOutOfStock ? 'disabled' : ''}`}
                 onClick={() => isOutOfStock ? null : setShowModal(true)}
@@ -59,7 +73,7 @@ function Product({ product, dispatch, cartQuantity, state }) {
                 product={product}
                 showModal={showModal} 
                 onClose={() => setShowModal(false)} 
-                onConfirm={(selectedQuantity) => addToCart(selectedQuantity)} // 將選擇的數量從 QuantityModal傳回來這裡
+                onConfirm={(selectedQuantity) => addToCart(selectedQuantity)} // 將選擇的數量從 QuantityModal 傳回來這裡
                 maxQuantity={product.stock} // 商品最大數量
                 cartQuantity={cartQuantity} // 購物車已有的數量
               />
@@ -73,6 +87,7 @@ function Product({ product, dispatch, cartQuantity, state }) {
 
 export default function Products() {
   const [state, dispatch] = useContext(CartContext);
+  console.log();
 
   return (
     <div className="row row-cols-2 row-cols-md-3 g-3">
@@ -82,6 +97,7 @@ export default function Products() {
     </div>
   );
 }
+
 
 // 《代碼結構和功能》 
 // 這段代碼定義了兩個 React 組件：Product 和 Products。這些組件用於顯示產品列表，並允許用戶將選擇的產品添加到購物車。
