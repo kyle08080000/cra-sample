@@ -10,22 +10,36 @@ export default function QuantityModal({ product, showModal, onClose, onConfirm, 
   useEffect(() => {
     // 初始化 Bootstrap 模態框
     modalInstance.current = new Modal(modalRef.current);
-
-    // 監聽隱藏事件
-    modalRef.current.addEventListener('hidden.bs.modal', onClose);
-
+  
+    // 綁定事件監聽器
+    const modalCurrent = modalRef.current;
+    modalCurrent.addEventListener('hidden.bs.modal', onClose);
+  
     return () => {
-      modalRef.current.removeEventListener('hidden.bs.modal', onClose);
+      // 解除事件監聽器，使用 modalCurrent 參考
+      modalCurrent.removeEventListener('hidden.bs.modal', onClose);
+      // 確保模態框隱藏
+      if (modalInstance.current) {
+        modalInstance.current.hide();
+      }
     };
-  }, []); // 如果在[]加入onClose的話，每當 onClose 函數更新時，useEffect 將清理並重新設置事件監聽器，以確保始終使用最新的 onClose 函數。這保證了即使父組件中的 onClose 函數改變了，當模態框隱藏時仍然能夠調用正確的函數。
-
+  }, [onClose]);
+  /** 將 onClose 加入依賴陣列 
+   * 在您的 useEffect 函數中，有可能 modalRef.current 在清理函數運行時變成 null。
+   * 這是因為 React 在組件卸載時會清除 ref 的當前值。
+   * 要解決這個問題，您需要在 useEffect 函數的函數體內創建一個變數來持有 modalRef.current 的值，並在返回的清理函數中使用該變數。 */
   useEffect(() => {
-    if (showModal) {
+    if (showModal && modalRef.current) {
       modalInstance.current.show();
-    } else {
+    } else if (modalInstance.current) {
       modalInstance.current.hide();
     }
   }, [showModal]);
+  /** 這樣可以確保在嘗試顯示或隱藏模態框時，相關的 DOM 元素存在。
+   * 另一個要點是在使用 Bootstrap 的 JavaScript 插件與 React 時要小心，
+   * 因為 Bootstrap 的插件通常會直接操作 DOM，這可能與  React 的虛擬 DOM 機制相沖突。
+   * 在某些情況下，您可能需要使用 useState 或 useEffect 來確保 DOM 節點已準備就緒並且可以安全地操縱。
+   */
 
   // 送出按鈕 綁定的功能
   const handleConfirm = () => {
